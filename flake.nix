@@ -13,6 +13,7 @@
           pkgs.jdk25
           pkgs.gradle_9
 	        pkgs.git
+          pkgs.gh
         ];
         shellHook = ''
           export JAVA_HOME="${pkgs.jdk25}/lib/openjdk"
