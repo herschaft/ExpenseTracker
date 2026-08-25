@@ -4,14 +4,12 @@ public class Transaction {
 
     private final double amount;
     private final String description;
-    private final boolean negative;
+    private final TransactionType negative;
 
-    public Transaction(double amount, String description, Boolean negative){
-
+    public Transaction(double amount, String description, TransactionType negative){
         this.amount = amount;
         this.description = description;
         this.negative = negative;
-
     }
 
     public double getAmount(){
@@ -22,20 +20,24 @@ public class Transaction {
         return this.description;
     }
 
-    public Boolean getNegative(){
+    public TransactionType getTransactionType(){
         return this.negative;
     }
     
-    public String getNegativeString(){
-        if(this.negative){
-            return "Negativo";
+    public String getTransactioTypeString(){
+        if(this.negative.equals(TransactionType.EXPENSE)){
+            return "Gasto";
         } else {
-            return "Adição";
+            return "Ganho";
         }
     }
 
     public double getSignedAmount(){
-        return negative ? -amount : amount;
+        if(this.negative.equals(TransactionType.EXPENSE)){
+            return -this.amount;
+        } else {
+            return this.amount;
+        }
     }
 
 }
