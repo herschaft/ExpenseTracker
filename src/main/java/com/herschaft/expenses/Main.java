@@ -7,46 +7,61 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
+        //Initialize list of transactions and added example 
         List<Transaction> history = new ArrayList<>();
         history.add(new Expense(5, "salgado"));
 
-        double saldo = 0;
-
-        Transaction trans;
         Scanner scanner = new Scanner(System.in);
-        double valor = 0;
-        String descrição = "";
-        boolean negativo = false;
 
-        System.out.println("Valor: ");
-        valor = Double.parseDouble(scanner.next());
-        System.out.println("Descrição: ");
-        descrição = scanner.next();
-        System.out.println("Negativo? y/n ");
-        if(scanner.next().equalsIgnoreCase("y")) { negativo = true; }
-        else { negativo = false; }
-
-        if(negativo) { trans = new Expense(valor, descrição); }
-        else { trans = new Income(valor, descrição); }
-
-        history.add(trans);
-        
-        
-        for (Transaction transactions : history) {
-            System.out.println(String.format("===========\nValor: %.2f\nDescrição: %s\nNegativo: %s",
-            transactions.getAmount(),
-            transactions.getDescription(),
-            transactions.getTransactioTypeString()
-            ));
-
-            saldo += transactions.getSignedAmount();
-
+        System.out.println("======CLI Menu======\n\t1. Registrar novo gasto\n\t2. Registrar novo ganho\n\t3. Listar transações\n\tq. Fechar programa");
+        switch (scanner.next()) {
+            case "1":
+                history.add(getExpenseInfoCli(scanner));
+                //Debug placeholder until better flow
+                listTransactionsCli(history);
+                break;
+            case "2":
+                history.add(getIncomeInfoCli(scanner));
+                //Debug placeholder until better flow
+                listTransactionsCli(history);
+                break;
+            case "3":
+                listTransactionsCli(history);
+                break;
+            default:
+                break;
         }
 
-        System.out.println(String.format("\n\nValor final: %.2f", saldo));
-
         scanner.close();
-
     }
 
+    public static Expense getExpenseInfoCli(Scanner scanner) {
+        double amount;
+        String description;
+        System.out.print("Valor: ");
+        amount = Double.parseDouble(scanner.next());
+        System.out.print("Descrição: ");
+        description = scanner.nextLine();
+        return new Expense(amount, description);
+    }
+
+    public static Income getIncomeInfoCli(Scanner scanner) {
+        double amount;
+        String description;
+        System.out.print("Valor: ");
+        amount = Double.parseDouble(scanner.next());
+        System.out.print("Descrição: ");
+        description = scanner.nextLine();
+        return new Income(amount, description);
+    }
+
+    public static void listTransactionsCli(List<Transaction> transactions) {
+        for (Transaction transaction : transactions) {
+            System.out.println(String.format("===========\nValor: %.2f\nDescrição: %s\nNegativo: %s",
+            transaction.getAmount(),
+            transaction.getDescription(),
+            transaction.getTransactionTypeString()
+            ));
+        }
+    }
 }

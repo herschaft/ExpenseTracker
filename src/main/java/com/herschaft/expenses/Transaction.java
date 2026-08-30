@@ -4,12 +4,12 @@ public class Transaction {
 
     private final double amount;
     private final String description;
-    private final TransactionType negative;
+    private final TransactionType transactionType;
 
-    public Transaction(double amount, String description, TransactionType negative){
+    public Transaction(double amount, String description, TransactionType transactionType){
         this.amount = amount;
         this.description = description;
-        this.negative = negative;
+        this.transactionType = transactionType;
     }
 
     public double getAmount(){
@@ -21,11 +21,11 @@ public class Transaction {
     }
 
     public TransactionType getTransactionType(){
-        return this.negative;
+        return this.transactionType;
     }
     
-    public String getTransactioTypeString(){
-        if(this.negative.equals(TransactionType.EXPENSE)){
+    public String getTransactionTypeString(){
+        if(this.transactionType.equals(TransactionType.EXPENSE)){
             return "Gasto";
         } else {
             return "Ganho";
@@ -33,7 +33,7 @@ public class Transaction {
     }
 
     public double getSignedAmount(){
-        if(this.negative.equals(TransactionType.EXPENSE)){
+        if(this.transactionType.equals(TransactionType.EXPENSE)){
             return -this.amount;
         } else {
             return this.amount;
