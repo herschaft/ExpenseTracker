@@ -1,4 +1,4 @@
-package com.herschaft.expenses;
+package com.herschaft.expenses.model;
 
 public enum TransactionType {
     EXPENSE,
