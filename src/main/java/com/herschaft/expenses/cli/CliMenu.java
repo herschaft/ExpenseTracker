@@ -22,7 +22,7 @@ public class CliMenu {
 
         System.out.println("======CLI Menu======\n\t1. Registrar novo gasto\n\t2. Registrar novo ganho\n\t3. Listar transações\n\tq. Fechar programa");
 
-        switch (scanner.next()) {
+        switch (scanner.nextLine()) {
             case "1":
                 repository.save(getExpenseInfoCli(scanner));
                 //Debug placeholder until better flow
@@ -55,7 +55,7 @@ public class CliMenu {
         double amount;
         String description;
         System.out.print("Valor: ");
-        amount = Double.parseDouble(scanner.next());
+        amount = Double.parseDouble(scanner.nextLine());
         System.out.print("Descrição: ");
         description = scanner.nextLine();
         return new Income(amount, description);
