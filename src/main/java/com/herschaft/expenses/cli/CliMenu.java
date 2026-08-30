@@ -20,25 +20,38 @@ public class CliMenu {
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("======CLI Menu======\n\t1. Registrar novo gasto\n\t2. Registrar novo ganho\n\t3. Listar transações\n\tq. Fechar programa");
+        boolean running = true;
 
-        switch (scanner.nextLine()) {
-            case "1":
-                repository.save(getExpenseInfoCli(scanner));
-                //Debug placeholder until better flow
-                listTransactionsCli(repository.getAll());
-                break;
-            case "2":
-                repository.save(getIncomeInfoCli(scanner));
-                //Debug placeholder until better flow
-                listTransactionsCli(repository.getAll());
-                break;
-            case "3":
-                listTransactionsCli(repository.getAll());
-                break;
-            default:
-                break;
+        while (running) {
+
+            System.out.println(
+                    "======CLI Menu======\n\t1. Registrar novo gasto\n\t2. Registrar novo ganho\n\t3. Listar transações\n\tq. Fechar programa");
+
+            switch (scanner.nextLine()) {
+                case "1":
+                    repository.save(getExpenseInfoCli(scanner));
+                    break;
+
+                case "2":
+                    repository.save(getIncomeInfoCli(scanner));
+                    break;
+
+                case "3":
+                    listTransactionsCli(repository.getAll());
+                    break;
+
+                case "q":
+                    running = false;
+                    break;
+
+                default:
+                    System.out.println("Opção inválida.");
+                    break;
+            }
         }
+
+        scanner.close();
+
     }
 
     public static Expense getExpenseInfoCli(Scanner scanner) {
@@ -64,9 +77,8 @@ public class CliMenu {
     public static void listTransactionsCli(List<Transaction> transactions) {
         for (Transaction transaction : transactions) {
             System.out.println(String.format("===========\nValor: %.2f\nDescrição: %s",
-            transaction.getAmount(),
-            transaction.getDescription()
-            ));
+                    transaction.getAmount(),
+                    transaction.getDescription()));
         }
     }
 }
