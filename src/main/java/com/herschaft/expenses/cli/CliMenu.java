@@ -63,10 +63,9 @@ public class CliMenu {
 
     public static void listTransactionsCli(List<Transaction> transactions) {
         for (Transaction transaction : transactions) {
-            System.out.println(String.format("===========\nValor: %.2f\nDescrição: %s\nNegativo: %s",
+            System.out.println(String.format("===========\nValor: %.2f\nDescrição: %s",
             transaction.getAmount(),
-            transaction.getDescription(),
-            transaction.getTransactionTypeString()
+            transaction.getDescription()
             ));
         }
     }
