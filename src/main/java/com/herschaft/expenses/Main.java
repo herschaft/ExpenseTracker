@@ -1,13 +1,12 @@
 package com.herschaft.expenses;
 
 import com.herschaft.expenses.cli.CliMenu;
-import com.herschaft.expenses.persistence.InMemoryTransactionRepository;
-import com.herschaft.expenses.persistence.TransactionRepository;
+import com.herschaft.expenses.persistence.SqliteTransactionRepository;
 
 public class Main {
 
     public static void main(String[] args) {
-        TransactionRepository repository = new InMemoryTransactionRepository();
+        SqliteTransactionRepository repository = new SqliteTransactionRepository();
         CliMenu menu = new CliMenu(repository);
 
         menu.start();

@@ -9,7 +9,7 @@ repositories {
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:6.0.1")
     implementation("org.xerial:sqlite-jdbc:3.53.4.0")
-
+}
 application {
     mainClass = "com.herschaft.expenses.Main"
 }
