@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.herschaft.expenses.database.Database;
 import com.herschaft.expenses.model.Transaction;
+import com.herschaft.expenses.model.TransactionType;
 
 public class SqliteTransactionRepository implements TransactionRepository {
 
@@ -21,6 +22,18 @@ public class SqliteTransactionRepository implements TransactionRepository {
     @Override
     public void save(Transaction transaction){
         db.save(transaction.getAmount(), transaction.getDescription(), transaction.getTransactionType());
+    }
+
+    public void updateAmount(int id, double new_value) {
+        db.updateAmountTransaction(new_value, id);
+    }
+    
+    public void updateDescriptionTransaction(int id, String new_value) {
+        db.updateDescriptionTransaction(new_value, id);
+    }
+
+    public void updateTypeTransaction(int id, TransactionType new_value) {
+        db.updateTypeTransaction(new_value, id);
     }
 
     public boolean init() {

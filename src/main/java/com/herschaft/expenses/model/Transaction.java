@@ -5,11 +5,19 @@ public class Transaction {
     private final double amount;
     private final String description;
     private final TransactionType transactionType;
+    private int id;
 
     public Transaction(double amount, String description, TransactionType transactionType){
         this.amount = amount;
         this.description = description;
         this.transactionType = transactionType;
+    }
+
+    public Transaction(int id, double amount, String description, TransactionType transactionType){
+        this.amount = amount;
+        this.description = description;
+        this.transactionType = transactionType;
+        this.id = id;
     }
 
     public double getAmount(){
@@ -38,6 +46,10 @@ public class Transaction {
         } else {
             return this.amount;
         }
+    }
+
+    public int getId() {
+        return this.id;
     }
 
 }
