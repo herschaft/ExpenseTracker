@@ -15,21 +15,80 @@ import java.sql.PreparedStatement;
 
 public class Database {
 
-    private List<Transaction> list = new ArrayList<>();
+    final String databaseSqlFolder = "jdbc:sqlite:resources/transactions.db";
 
     public List<Transaction> list() {
         try (
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:resources/transactions.db");
+            Connection connection = DriverManager.getConnection(databaseSqlFolder);
             Statement statement = connection.createStatement();
         ) {
+            List<Transaction> list = new ArrayList<>();
             ResultSet result = statement.executeQuery("SELECT * FROM transactions");
             while(result.next()) {
                 list.add(new Transaction(result.getDouble("amount"), result.getString("description"), TransactionType.valueOf(result.getString("transaction_type"))));
             }
             return list;
         } catch (SQLException e) {
+            List<Transaction> list = new ArrayList<>();
             e.printStackTrace();
             return list;
+        }
+    }
+
+    public void updateAmountTransaction(double new_value, int id) {
+        try (
+            Connection connection = DriverManager.getConnection(databaseSqlFolder);
+            PreparedStatement statement = connection.prepareStatement("""
+                UPDATE transactions
+                SET amount = ?
+                WHERE = ?
+                """
+            );
+        ) {
+            statement.setDouble(1, new_value);
+            statement.setInt(2, id);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateDescriptionTransaction(String new_value, int id) {
+        try (
+            Connection connection = DriverManager.getConnection(databaseSqlFolder);
+            PreparedStatement statement = connection.prepareStatement("""
+                UPDATE transactions
+                SET description = ?
+                WHERE = ?
+                """
+            );
+        ) {
+            statement.setString(1, new_value);
+            statement.setInt(2, id);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateTypeTransaction(TransactionType new_value, int id) {
+        try (
+            Connection connection = DriverManager.getConnection(databaseSqlFolder);
+            PreparedStatement statement = connection.prepareStatement("""
+                UPDATE transactions
+                SET amount = ?
+                WHERE = ?
+                """
+            );
+        ) {
+            statement.setString(1, new_value.name());
+            statement.setInt(2, id);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
