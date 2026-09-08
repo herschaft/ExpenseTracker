@@ -24,7 +24,7 @@ public class SqliteTransactionRepository implements TransactionRepository {
         db.save(transaction.getAmount(), transaction.getDescription(), transaction.getTransactionType());
     }
 
-    public void updateAmount(int id, double new_value) {
+    public void updateAmountTransaction(int id, double new_value) {
         db.updateAmountTransaction(new_value, id);
     }
     

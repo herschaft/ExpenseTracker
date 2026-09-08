@@ -25,7 +25,7 @@ public class Database {
             List<Transaction> list = new ArrayList<>();
             ResultSet result = statement.executeQuery("SELECT * FROM transactions");
             while(result.next()) {
-                list.add(new Transaction(result.getDouble("amount"), result.getString("description"), TransactionType.valueOf(result.getString("transaction_type"))));
+                list.add(new Transaction(result.getInt("id"), result.getDouble("amount"), result.getString("description"), TransactionType.valueOf(result.getString("transaction_type"))));
             }
             return list;
         } catch (SQLException e) {
@@ -41,7 +41,7 @@ public class Database {
             PreparedStatement statement = connection.prepareStatement("""
                 UPDATE transactions
                 SET amount = ?
-                WHERE = ?
+                WHERE id = ?
                 """
             );
         ) {
@@ -60,7 +60,7 @@ public class Database {
             PreparedStatement statement = connection.prepareStatement("""
                 UPDATE transactions
                 SET description = ?
-                WHERE = ?
+                WHERE id = ?
                 """
             );
         ) {
@@ -78,8 +78,8 @@ public class Database {
             Connection connection = DriverManager.getConnection(databaseSqlFolder);
             PreparedStatement statement = connection.prepareStatement("""
                 UPDATE transactions
-                SET amount = ?
-                WHERE = ?
+                SET transaction_type = ?
+                WHERE id = ?
                 """
             );
         ) {
