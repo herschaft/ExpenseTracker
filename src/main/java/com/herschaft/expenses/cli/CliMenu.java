@@ -24,8 +24,6 @@ public class CliMenu {
 
         boolean running = true;
 
-        List<Transaction> buffer = new ArrayList<>();
-
         while (running) {
 
             System.out.println(
@@ -45,7 +43,7 @@ public class CliMenu {
                     break;
 
                 case "4":
-                    selectUpdate(scanner, buffer);
+                    selectUpdate(scanner);
                     break;
 
                 case "q":
@@ -103,7 +101,8 @@ public class CliMenu {
         }
     }
     
-    public void selectUpdate(Scanner scanner, List<Transaction>buffer) {
+    public void selectUpdate(Scanner scanner) {
+        List<Transaction> buffer = new ArrayList<>();
         buffer = repository.getAll();
         listTransactionsUpdate(buffer);
         System.out.println("===========\nSelecionar qual transação?");
