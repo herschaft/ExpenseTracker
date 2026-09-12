@@ -9,29 +9,28 @@ public class InMemoryTransactionRepository implements TransactionRepository {
 
     private final List<Transaction> history = new ArrayList<>();
 
-    @Override
     public List<Transaction> getAll() {
         return history;
     }
 
-    @Override
     public void save(Transaction transaction) {
         history.add(transaction);
     }
 
-    @Override
     public void updateAmountTransaction(int id, double new_value) {
-        
+        //TODO
     }
 
-    @Override
-    public void updateDescriptionTransaction(int id, String new_value) {
-        
+    public void updateDescriptionTransaction(int id, String new_value) {        
+        //TODO
     }
 
-    @Override
-    public void updateTypeTransaction(int id, TransactionType new_value) {
-        
+    public void updateTypeTransaction(int id, TransactionType new_value) {        
+        //TODO
+    }
+
+    public void delete(int id) {
+        //TODO
     }
 
 }

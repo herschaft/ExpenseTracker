@@ -94,7 +94,7 @@ public class Database {
 
     public void save(double amount, String description, TransactionType type) {
         try (
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:resources/transactions.db");
+            Connection connection = DriverManager.getConnection(databaseSqlFolder);
             PreparedStatement statement = connection.prepareStatement("""
                 INSERT INTO transactions (amount, description, transaction_type) VALUES (?, ?, ?)
             """);
@@ -109,9 +109,26 @@ public class Database {
         }
     }
 
+    public void delete(int id) {
+        try (
+            Connection connection = DriverManager.getConnection(databaseSqlFolder);
+            PreparedStatement statement = connection.prepareStatement("""
+                    DELETE
+                    FROM transactions
+                    WHERE id == ?
+                    """);
+        ) {
+            statement.setInt(1, id);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean tableExists() {
         try (
-                Connection connection = DriverManager.getConnection("jdbc:sqlite:resources/transactions.db");
+                Connection connection = DriverManager.getConnection(databaseSqlFolder);
                 Statement statement = connection.createStatement();) {
             ResultSet result = statement.executeQuery("""
                         SELECT name
@@ -130,7 +147,7 @@ public class Database {
 
     public boolean createDB() {
         try (
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:resources/transactions.db");
+            Connection connection = DriverManager.getConnection(databaseSqlFolder);
             Statement statement = connection.createStatement();
         ) {
                 statement.execute("""

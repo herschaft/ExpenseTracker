@@ -36,6 +36,10 @@ public class SqliteTransactionRepository implements TransactionRepository {
         db.updateTypeTransaction(new_value, id);
     }
 
+    public void delete(int id) {
+        db.delete(id);
+    }
+
     public boolean init() {
         if(!db.tableExists()) {
             if(db.createDB()) {
