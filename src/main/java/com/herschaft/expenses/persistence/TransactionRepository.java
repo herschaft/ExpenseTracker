@@ -5,7 +5,7 @@ import com.herschaft.expenses.model.*;
 
 public interface TransactionRepository {
 
-    List<Transaction> getAll();
+    List<Transaction> getAll(int limit, int offset);
     void save(Transaction transaction);
     void updateAmountTransaction(int id, double new_value);
     void updateDescriptionTransaction(int id, String new_value);

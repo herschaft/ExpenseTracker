@@ -2,21 +2,25 @@ package com.herschaft.expenses.persistence;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.herschaft.expenses.database.Database;
 import com.herschaft.expenses.model.Transaction;
 import com.herschaft.expenses.model.TransactionType;
 
+@Repository
 public class SqliteTransactionRepository implements TransactionRepository {
 
-    private Database db = new Database();
+    private final Database db;
 
-    public SqliteTransactionRepository() {
+    public SqliteTransactionRepository(Database db) {
+        this.db = db;
         init();
     }
 
     @Override
-    public List<Transaction> getAll() {
-        return db.list();
+    public List<Transaction> getAll(int limit, int offset) {
+        return db.list(limit, offset);
     }
 
     @Override

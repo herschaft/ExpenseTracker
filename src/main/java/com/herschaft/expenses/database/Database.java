@@ -4,6 +4,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.herschaft.expenses.model.TransactionType;
 import com.herschaft.expenses.model.Transaction;
 
@@ -13,17 +15,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 
+@Repository 
 public class Database {
 
     final String databaseSqlFolder = "jdbc:sqlite:resources/transactions.db";
 
-    public List<Transaction> list() {
+    public List<Transaction> list(int limit, int offset) {
         try (
             Connection connection = DriverManager.getConnection(databaseSqlFolder);
-            Statement statement = connection.createStatement();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM transactions LIMIT ? OFFSET ? ORDER BY id");
         ) {
             List<Transaction> list = new ArrayList<>();
-            ResultSet result = statement.executeQuery("SELECT * FROM transactions");
+
+            statement.setInt(1, limit);
+            statement.setInt(2, offset);
+
+            ResultSet result = statement.executeQuery();
             while(result.next()) {
                 list.add(new Transaction(result.getInt("id"), result.getDouble("amount"), result.getString("description"), TransactionType.valueOf(result.getString("transaction_type"))));
             }

@@ -1,5 +1,8 @@
 package com.herschaft.expenses.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Transaction {
 
     private final double amount;
@@ -7,7 +10,12 @@ public class Transaction {
     private final TransactionType transactionType;
     private int id;
 
-    public Transaction(double amount, String description, TransactionType transactionType){
+    @JsonCreator
+    public Transaction(
+        @JsonProperty("amount") double amount,
+        @JsonProperty("description") String description,
+        @JsonProperty("transactionType") TransactionType transactionType
+    ) {
         this.amount = amount;
         this.description = description;
         this.transactionType = transactionType;

@@ -38,7 +38,7 @@ public class CliMenu {
                     break;
 
                 case "3":
-                    listTransactionsCli(repository.getAll());
+                    listTransactionsCli(repository.getAll(20, 20));
                     break;
 
                 case "4":
@@ -101,7 +101,7 @@ public class CliMenu {
     }
     
     public void selectManage(Scanner scanner) {
-        List<Transaction> buffer = repository.getAll();
+        List<Transaction> buffer = repository.getAll(20, 20);
         listTransactions(buffer);
         System.out.println("===========\nSelecionar qual transação?");
         int option = ((int)readPositiveDouble(scanner));

@@ -1,14 +1,14 @@
 package com.herschaft.expenses;
 
-import com.herschaft.expenses.cli.CliMenu;
-import com.herschaft.expenses.persistence.SqliteTransactionRepository;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
 public class Main {
 
     public static void main(String[] args) {
-        SqliteTransactionRepository repository = new SqliteTransactionRepository();
-        CliMenu menu = new CliMenu(repository);
+        
+        SpringApplication.run(Main.class, args);
 
-        menu.start();
     }
 }
