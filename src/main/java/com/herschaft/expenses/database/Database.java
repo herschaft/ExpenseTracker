@@ -4,7 +4,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import com.herschaft.expenses.model.TransactionType;
 import com.herschaft.expenses.model.Transaction;
@@ -15,7 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 
-@Repository 
+@Component 
 public class Database {
 
     final String databaseSqlFolder = "jdbc:sqlite:resources/transactions.db";
@@ -23,7 +23,7 @@ public class Database {
     public List<Transaction> list(int limit, int offset) {
         try (
             Connection connection = DriverManager.getConnection(databaseSqlFolder);
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM transactions LIMIT ? OFFSET ? ORDER BY id");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM transactions ORDER BY id LIMIT ? OFFSET ?");
         ) {
             List<Transaction> list = new ArrayList<>();
 
@@ -39,6 +39,29 @@ public class Database {
             List<Transaction> list = new ArrayList<>();
             e.printStackTrace();
             return list;
+        }
+    }
+
+    public Transaction getTransaction(int id) {
+        try (
+            Connection connection = DriverManager.getConnection(databaseSqlFolder);
+            PreparedStatement statement = connection.prepareStatement("""
+                SELECT * FROM transactions WHERE id = ?
+            """)
+        ) {
+
+            statement.setInt(1, id);
+
+            ResultSet result = statement.executeQuery();
+            if(result.next()) {
+                return new Transaction(result.getInt("id"), result.getDouble("amount"), result.getString("description"), TransactionType.valueOf(result.getString("transaction_type")));
+            } else {
+                return null;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

@@ -7,6 +7,7 @@ public interface TransactionRepository {
 
     List<Transaction> getAll(int limit, int offset);
     void save(Transaction transaction);
+    Transaction getTransaction(int id);
     void updateAmountTransaction(int id, double new_value);
     void updateDescriptionTransaction(int id, String new_value);
     void updateTypeTransaction(int id, TransactionType new_value);
