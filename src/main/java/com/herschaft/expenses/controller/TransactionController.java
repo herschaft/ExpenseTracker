@@ -13,14 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.herschaft.expenses.model.Transaction;
 import com.herschaft.expenses.persistence.TransactionRepository;
+import com.herschaft.expenses.service.TransactionService;
 
 @RestController 
 public class TransactionController {
 
-    private final TransactionRepository repository;
+    private final TransactionService service;
 
-    public TransactionController(TransactionRepository repository) {
-        this.repository = repository;
+    public TransactionController(TransactionService service) {
+        this.service = service;
     }
 
     @GetMapping("/transactions")
@@ -35,7 +36,7 @@ public class TransactionController {
     
     @PostMapping("/transactions")
     public void createTransaction(@RequestBody Transaction transaction) {
-        this.repository.save(transaction);
+        this.service.createTransaction(transaction);
     }
 
     @DeleteMapping("/transactions/{id}")
