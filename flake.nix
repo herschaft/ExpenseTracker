@@ -9,15 +9,18 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in {
       devShells.${system}.default = pkgs.mkShell {
-        packages = [
-          pkgs.jdk25
-          pkgs.gradle_9
-	        pkgs.git
-          pkgs.gh
+        packages = with pkgs; [
+          jdk25
+          gradle_9
+          git
+          gh
         ];
+
+        JAVA_HOME = "${pkgs.jdk25}/";
+
         shellHook = ''
-          export JAVA_HOME="${pkgs.jdk25}/lib/openjdk"
-          '';
+          export PATH="$JAVA_HOME/bin:$PATH"
+        '';
       };
     };
 }

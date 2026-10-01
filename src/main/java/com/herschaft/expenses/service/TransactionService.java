@@ -36,7 +36,7 @@ public class TransactionService {
                 }
                 switch (field) {
                     case Transaction.class.getField("amount"):
-                        
+                        transaction.getAmount
                         break;
                 
                     default:
