@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS transactions (
+    id BIGSERIAL PRIMARY KEY NOT NULL,
+    amount NUMERIC(10, 2) NOT NULL,
+    description TEXT NOT NULL,
+    type TEXT NOT NULL CHECK (type IN ('INCOME', 'EXPENSE')),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

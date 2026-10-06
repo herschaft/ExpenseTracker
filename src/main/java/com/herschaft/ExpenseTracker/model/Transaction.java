@@ -2,10 +2,10 @@ package com.herschaft.ExpenseTracker.model;
 
 import java.math.BigDecimal;
 
-public record Transaction(BigDecimal amount, String description, TransactionType transactionType, Long id)  {
+public record Transaction(BigDecimal amount, String description, TransactionType type, Long id)  {
 
-    public Transaction(BigDecimal amount, String description, TransactionType transactionType) {
-        this(amount, description, transactionType, null);  
+    public Transaction(BigDecimal amount, String description, TransactionType type) {
+        this(amount, description, type, null);  
     }
 
     public Transaction income(BigDecimal amount, String description) {
@@ -17,7 +17,7 @@ public record Transaction(BigDecimal amount, String description, TransactionType
     }
 
     public BigDecimal getSignedAmount(){
-        if(this.transactionType.equals(TransactionType.EXPENSE)){
+        if(this.type.equals(TransactionType.EXPENSE)){
             return this.amount.negate();
         }
         

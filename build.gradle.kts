@@ -20,7 +20,8 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
-	runtimeOnly("org.xerial:sqlite-jdbc")
+	implementation("me.paulschwarz:springboot4-dotenv:5.1.0")
+	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-jdbc-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
