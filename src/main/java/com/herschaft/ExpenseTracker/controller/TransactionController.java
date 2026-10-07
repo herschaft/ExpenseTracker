@@ -2,6 +2,9 @@ package com.herschaft.ExpenseTracker.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -15,6 +18,7 @@ import com.herschaft.ExpenseTracker.DTO.UpdateTransactionDTO;
 import com.herschaft.ExpenseTracker.model.Transaction;
 import com.herschaft.ExpenseTracker.service.TransactionService;
 
+@CrossOrigin(origins = "*")
 @RestController
 public class TransactionController {
 
@@ -32,23 +36,41 @@ public class TransactionController {
     }
 
     @GetMapping("/transactions/{id}")
-    public Transaction getTransaction(@PathVariable Long id) {
-        return this.service.getById(id);
+    public ResponseEntity<Transaction> getTransaction(@PathVariable Long id) {
+        Transaction transaction = this.service.getById(id);
+
+        if (transaction == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(transaction);
+        }
     }
 
     @PostMapping("/transactions")
-    public void createTransaction(@RequestBody Transaction transaction) {
-        this.service.save(transaction);
+    public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) {
+        Transaction created = this.service.save(transaction);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @DeleteMapping("/transactions/{id}")
-    public void deleteTransaction(@PathVariable Long id) {
-        this.service.delete(id);
+    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
+        if (this.service.delete(id) == 1) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PatchMapping("/transactions/{id}")
-    public void updateTransaction(@PathVariable Long id, @RequestBody UpdateTransactionDTO dto) {
-        this.service.updateDTO(id, dto);
+    public ResponseEntity<Transaction> updateTransaction(
+            @PathVariable Long id,
+            @RequestBody UpdateTransactionDTO dto) {
+
+        if (!this.service.updateDTO(id, dto)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(this.service.getById(id));
     }
 
 }

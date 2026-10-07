@@ -18,12 +18,17 @@ public class TransactionRepository {
         this.jdbc = jdbc;
     }
 
-    public void save(Transaction transaction) {
-        jdbc.update(
+    public Long save(Transaction transaction) {
+        return jdbc.queryForObject(
             """
-            INSERT INTO transactions (amount, description, type) VALUES (?, ? ,?)
+            INSERT INTO transactions (amount, description, type)
+            VALUES (?, ?, ?)
+            RETURNING id
             """,
-            transaction.amount(), transaction.description(), transaction.type().name()
+            Long.class,
+            transaction.amount(),
+            transaction.description(),
+            transaction.type().name()
         );
     }
 

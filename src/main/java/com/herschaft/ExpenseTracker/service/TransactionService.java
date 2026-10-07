@@ -3,6 +3,7 @@ package com.herschaft.ExpenseTracker.service;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.herschaft.ExpenseTracker.DTO.UpdateTransactionDTO;
@@ -22,28 +23,29 @@ public class TransactionService {
         this.validator = validator;
     }
 
-    public void save(Transaction transaction) {
+    public Transaction save(Transaction transaction) {
         validator.validateTransaction(transaction);
-        repo.save(transaction);
+        Long id = repo.save(transaction);
+        return new Transaction(transaction.amount(), transaction.description(), transaction.type(), id);
     }
 
-    public void delete(Long id) {
-        repo.delete(id);
+    public int delete(Long id) {
+        return repo.delete(id);
     }
 
-    public void updateAmount(Long id, BigDecimal amount) {
+    public int updateAmount(Long id, BigDecimal amount) {
         validator.validateAmount(amount);
-        repo.updateAmount(id, amount);
+        return repo.updateAmount(id, amount);
     }
 
-    public void updateDescription(Long id, String description) {
+    public int updateDescription(Long id, String description) {
         validator.validateDescription(description);
-        repo.updateDescription(id, description);
+        return repo.updateDescription(id, description);
     }
 
-    public void updateType(Long id, TransactionType type) {
+    public int updateType(Long id, TransactionType type) {
         validator.validateType(type);
-        repo.updateType(id, type);
+        return repo.updateType(id, type);
     }
 
     public List<Transaction> getList(int limit, int offset) {
@@ -51,19 +53,31 @@ public class TransactionService {
     }
 
     public Transaction getById(Long id) {
-        return repo.getById(id);
+        try {
+            return repo.getById(id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
-    public void updateDTO(Long id, UpdateTransactionDTO dto) {
-        if(dto.amount() != null) {
+    public boolean updateDTO(Long id, UpdateTransactionDTO dto) {
+        if (getById(id) == null) {
+            return false;
+        }
+
+        if (dto.amount() != null) {
             updateAmount(id, dto.amount());
         }
-        if(dto.description() != null) {
+
+        if (dto.description() != null) {
             updateDescription(id, dto.description());
         }
-        if(dto.type() != null) {
+
+        if (dto.type() != null) {
             updateType(id, dto.type());
         }
+
+        return true;
     }
 
 }
