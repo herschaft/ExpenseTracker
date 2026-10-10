@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ExpenseTracker</title>
+	<meta name="description" content="Controle público e compartilhado de receitas e despesas.">
+	<style>
+		:root {
+			--bg: #000;
+			--card: #191C1F;
+			--c2: #232729;
+			--line: #2E3337;
+			--mute: #8D969E;
+			--blue: #0666EB;
+			--inc: #00C187;
+			--exp: #EC5B62
+		}
+
+		* {
+			box-sizing: border-box;
+			margin: 0
+		}
+
+		body {
+			background: var(--bg);
+			color: #fff;
+			font: 15px/1.4 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+			font-variant-numeric: tabular-nums
+		}
+
+		button,
+		input {
+			font: inherit;
+			color: inherit
+		}
+
+		.wrap {
+			display: grid;
+			gap: 12px;
+			padding: 12px;
+			grid-template-columns: 1fr
+		}
+
+		@media(min-width:1024px) {
+			.wrap {
+				grid-template-columns: 1fr 1fr;
+				height: 100vh
+			}
+
+			.left {
+				display: flex;
+				flex-direction: column;
+				gap: 12px;
+				min-height: 0
+			}
+
+			.left .card {
+				flex: 1;
+				min-height: 0;
+				overflow: auto
+			}
+
+			.right {
+				min-height: 0
+			}
+		}
+
+		.card {
+			background: var(--card);
+			border-radius: 24px;
+			padding: 20px
+		}
+
+		h1 {
+			font-size: 19px;
+			font-weight: 800;
+			letter-spacing: -.02em
+		}
+
+		h2 {
+			font-size: 17px;
+			font-weight: 700
+		}
+
+		.mute {
+			color: var(--mute)
+		}
+
+		.sm {
+			font-size: 13px
+		}
+
+		.seg {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			background: var(--c2);
+			border-radius: 999px;
+			padding: 4px;
+			margin: 14px 0
+		}
+
+		.seg button {
+			border: 0;
+			background: none;
+			border-radius: 999px;
+			padding: 8px;
+			font-weight: 600;
+			color: var(--mute);
+			cursor: pointer
+		}
+
+		.seg button[aria-pressed=true] {
+			background: #fff;
+			color: #000
+		}
+
+		label {
+			display: block;
+			font-size: 13px;
+			color: var(--mute);
+			margin: 10px 0 4px
+		}
+
+		.field {
+			width: 100%;
+			background: var(--c2);
+			border: 1px solid transparent;
+			border-radius: 12px;
+			padding: 10px 12px;
+			font-size: 15px
+		}
+
+		.field:focus {
+			outline: none;
+			border-color: var(--blue)
+		}
+
+		.btn {
+			border: 0;
+			border-radius: 999px;
+			padding: 9px 18px;
+			font-weight: 600;
+			font-size: 14px;
+			cursor: pointer;
+			background: var(--c2)
+		}
+
+		.btn:hover {
+			background: var(--line)
+		}
+
+		.btn:disabled {
+			opacity: .4;
+			cursor: not-allowed
+		}
+
+		.main {
+			background: var(--blue)
+		}
+
+		.main:hover {
+			background: #0555C4
+		}
+
+		:focus-visible {
+			outline: 2px solid var(--blue);
+			outline-offset: 2px
+		}
+
+		.row {
+			display: flex;
+			align-items: center;
+			gap: 14px;
+			padding: 12px 24px
+		}
+
+		.row:hover {
+			background: #1F2326
+		}
+
+		.av {
+			width: 42px;
+			height: 42px;
+			border-radius: 50%;
+			background: var(--c2);
+			display: grid;
+			place-items: center;
+			font-weight: 700;
+			flex: none
+		}
+
+		.grow {
+			flex: 1;
+			min-width: 0
+		}
+
+		.trunc {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap
+		}
+
+		.inc {
+			color: var(--inc)
+		}
+
+		.exp {
+			color: var(--exp)
+		}
+
+		.act {
+			background: none;
+			border: 0;
+			color: var(--mute);
+			cursor: pointer;
+			font-size: 13px;
+			padding: 0
+		}
+
+		.act:hover {
+			color: #fff
+		}
+
+		.act.del:hover,
+		.act.sure {
+			color: var(--exp)
+		}
+
+		.pills {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap
+		}
+
+		.pill {
+			border: 0;
+			border-radius: 999px;
+			padding: 5px 14px;
+			font-size: 13px;
+			font-weight: 600;
+			background: var(--c2);
+			color: var(--mute);
+			cursor: pointer
+		}
+
+		.pill[aria-pressed=true] {
+			background: #fff;
+			color: #000
+		}
+
+		.chip {
+			background: var(--c2);
+			border-radius: 999px;
+			padding: 6px 12px;
+			font-size: 13px
+		}
+
+		#list {
+			list-style: none;
+			padding: 0
+		}
+
+		.right {
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+			padding: 0
+		}
+
+		#list {
+			flex: 1;
+			min-height: 0;
+			overflow: auto;
+			padding-bottom: 12px
+		}
+
+		.msg {
+			padding: 40px 24px;
+			text-align: center;
+			color: var(--mute)
+		}
+
+		#err {
+			color: var(--exp);
+			font-size: 13px;
+			min-height: 18px;
+			margin-top: 10px
+		}
+
+		details {
+			margin-top: 8px
+		}
+
+		summary {
+			cursor: pointer;
+			color: var(--mute);
+			font-size: 13px
+		}
+
+		pre {
+			font: 12px/1.5 ui-monospace, Menlo, Consolas, monospace;
+			white-space: pre-wrap;
+			word-break: break-all;
+			background: rgba(255, 255, 255, .04);
+			border-radius: 12px;
+			padding: 10px;
+			margin-top: 8px;
+			max-height: 220px;
+			overflow: auto
+		}
+
+		@media(prefers-reduced-motion:no-preference) {
+
+			.row,
+			.btn {
+				transition: background .15s
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="wrap">
+
+		<div class="left">
+			<section class="card">
+				<h1>ExpenseTracker</h1>
+				<p class="mute sm">Banco público e compartilhado: qualquer pessoa pode ver, criar, editar e apagar.</p>
+				<form id="form" novalidate>
+					<div class="seg" role="group" aria-label="Tipo">
+						<button type="button" data-t="INCOME" aria-pressed="false">Receita</button>
+						<button type="button" data-t="EXPENSE" aria-pressed="true">Despesa</button>
+					</div>
+					<label for="amount">Valor (R$)</label>
+					<input id="amount" class="field" inputmode="decimal" placeholder="0,00" autocomplete="off">
+					<label for="desc">Descrição</label>
+					<input id="desc" class="field" maxlength="120" placeholder="Ex.: Mercado" autocomplete="off">
+					<div style="display:flex;gap:8px;margin-top:16px">
+						<button class="btn main" id="save" type="submit">Adicionar</button>
+						<button class="btn" id="cancel" type="button" hidden>Cancelar edição</button>
+					</div>
+					<p id="err" role="alert"></p>
+				</form>
+			</section>
+
+			<section class="card">
+				<h2>Totais (todas as transações)</h2>
+				<div id="sums" class="pills" style="margin-top:12px"></div>
+				<details>
+					<summary>Última requisição à API</summary>
+					<pre id="log">Nenhuma ainda.</pre>
+				</details>
+			</section>
+		</div>
+
+		<main class="card right">
+			<div style="padding:24px 24px 12px">
+				<p class="mute sm">Saldo total</p>
+				<p id="balance" style="font-size:44px;font-weight:800;letter-spacing:-.02em;margin-top:2px">R$ 0,00</p>
+			</div>
+			<div
+				style="padding:0 24px 12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+				<div class="pills" id="filters">
+					<button class="pill" data-f="ALL" aria-pressed="true">Todas</button>
+					<button class="pill" data-f="INCOME" aria-pressed="false">Receitas</button>
+					<button class="pill" data-f="EXPENSE" aria-pressed="false">Despesas</button>
+				</div>
+				<button class="btn" id="reload" type="button">Recarregar</button>
+			</div>
+			<ul id="list" aria-live="polite"></ul>
+		</main>
+	</div>
+
+	<script>
+		// Mesma origem: o proxy reverso do servidor encaminha /transactions para o Spring.
+		// Se a API ficar em outro host, troque aqui (ex.: "https://api.herschaft.uk"). A API já libera CORS.
+		const API_BASE = "http://localhost:8080";
+		const PAGE = 20, CHUNK = 500, MAX_ITEMS = 5000, MAX_AMOUNT = 99999999.99;
+
+		const $ = s => document.querySelector(s);
+		const brl = n => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(n) || 0);
+		const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+		let all = [], shown = PAGE, filter = "ALL", type = "EXPENSE", editId = null, armed = null, armTimer = null;
+
+		// ---------- API ----------
+		async function api(method, path, body) {
+			const t0 = performance.now();
+			let res, text = "";
+			try {
+				res = await fetch(API_BASE + path, {
+					method, headers: body ? { "Content-Type": "application/json" } : {},
+					body: body ? JSON.stringify(body) : undefined
+				});
+				text = await res.text();
+			} catch {
+				log(method, path, body, "sem resposta", performance.now() - t0, "");
+				throw new Error("Sem conexão com a API. Tente de novo em instantes.");
+			}
+			log(method, path, body, res.status + " " + res.statusText, performance.now() - t0, text);
+			if (!res.ok) {
+				throw new Error(res.status === 404 ? "Transação não existe mais (alguém pode ter apagado)."
+					: res.status >= 500 ? "A API recusou os dados. Confira valor (até 99.999.999,99) e descrição."
+						: "Erro " + res.status + " na API.");
+			}
+			return text ? JSON.parse(text) : null;
+		}
+		function log(method, path, body, status, ms, text) {
+			let out = text; try { out = JSON.stringify(JSON.parse(text), null, 2); } catch { }
+			if (out && out.length > 1500) out = out.slice(0, 1500) + "\n…";
+			$("#log").textContent = `${method} ${path}\n` + (body ? JSON.stringify(body) + "\n" : "") +
+				`→ ${status} • ${Math.round(ms)} ms\n` + (out || "");
+		}
+
+		async function loadAll() {
+			$("#list").replaceChildren(el("li", "msg", "Carregando…"));
+			try {
+				const items = [];
+				for (let off = 0; off < MAX_ITEMS; off += CHUNK) {
+					const page = await api("GET", `/transactions?&limit=${CHUNK}&offset=${off}`);
+					items.push(...page);
+					if (page.length < CHUNK) break;
+				}
+				all = items.sort((a, b) => b.id - a.id);   // API ordena por id crescente; aqui mais nova primeiro
+				setErr("");
+			} catch (e) { all = []; setErr(e.message); }
+			render();
+		}
+
+		// ---------- render ----------
+		function render() {
+			let inc = 0, exp = 0;
+			for (const t of all) (t.type === "INCOME" ? (inc += +t.amount) : (exp += +t.amount));
+			$("#balance").textContent = brl(inc - exp);
+			$("#sums").replaceChildren(
+				chip("Receitas", inc, "inc"), chip("Despesas", exp, "exp"), chip("Transações", all.length));
+
+			const rows = all.filter(t => filter === "ALL" || t.type === filter);
+			const ul = $("#list"); ul.replaceChildren();
+			if (!rows.length) {
+				ul.append(el("li", "msg", all.length ? "Nada neste filtro." : "Nenhuma transação ainda. Seja o primeiro a adicionar."));
+				return;
+			}
+			for (const t of rows.slice(0, shown)) ul.append(row(t));
+			if (rows.length > shown) {
+				const li = el("li"); li.style.cssText = "text-align:center;padding:12px";
+				const b = el("button", "btn", `Mostrar mais (${rows.length - shown})`);
+				b.onclick = () => { shown += PAGE; render(); };
+				li.append(b); ul.append(li);
+			}
+		}
+		function chip(label, v, cls) {
+			const c = el("span", "chip");
+			const l = el("span", cls || "mute", label + " "); l.style.fontWeight = "600";
+			c.append(l, el("b", "", cls ? brl(v) : String(v)));
+			return c;
+		}
+		function row(t) {
+			const isInc = t.type === "INCOME";
+			const li = el("li", "row");
+			li.append(el("div", "av " + (isInc ? "inc" : "exp"), (t.description || "?").trim().charAt(0).toUpperCase()));
+			const mid = el("div", "grow");
+			mid.append(el("p", "trunc", t.description), el("p", "mute sm trunc", `#${t.id} • ${isInc ? "Receita" : "Despesa"}`));
+			const end = el("div"); end.style.textAlign = "right";
+			const amt = el("p", isInc ? "inc" : "", (isInc ? "+" : "−") + brl(t.amount)); amt.style.fontWeight = "700";
+			const acts = el("div"); acts.style.cssText = "display:flex;gap:12px;justify-content:flex-end;margin-top:2px";
+			const ed = el("button", "act", "Editar"); ed.onclick = () => startEdit(t);
+			const del = el("button", "act del" + (armed === t.id ? " sure" : ""), armed === t.id ? "Confirmar?" : "Excluir");
+			del.onclick = () => armed === t.id ? remove(t.id) : arm(t.id);
+			acts.append(ed, del); end.append(amt, acts);
+			li.append(mid, end);
+			return li;
+		}
+
+		// ---------- ações ----------
+		function setType(t) {
+			type = t;
+			document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.t === t));
+		}
+		function setErr(m) { $("#err").textContent = m; }
+		function arm(id) { armed = id; clearTimeout(armTimer); armTimer = setTimeout(() => { armed = null; render(); }, 3000); render(); }
+
+		function startEdit(t) {
+			editId = t.id; setType(t.type);
+			$("#amount").value = String(t.amount).replace(".", ",");
+			$("#desc").value = t.description;
+			$("#save").textContent = `Salvar #${t.id}`; $("#cancel").hidden = false;
+			setErr(""); $("#desc").focus();
+		}
+		function resetForm() {
+			editId = null; $("#form").reset(); setType("EXPENSE");
+			$("#save").textContent = "Adicionar"; $("#cancel").hidden = true;
+		}
+
+		async function remove(id) {
+			armed = null;
+			try { await api("DELETE", `/transactions/${id}`); setErr(""); if (editId === id) resetForm(); }
+			catch (e) { setErr(e.message); }
+			await loadAll();
+		}
+
+		$("#form").addEventListener("submit", async e => {
+			e.preventDefault();
+
+			const amount = Math.round(
+				parseFloat(
+					$("#amount").value.trim().replace(/\./g, "").replace(",", ".")
+				) * 100
+			) / 100;
+
+			const description = $("#desc").value.trim();
+
+			if (!(amount > 0)) return setErr("Valor precisa ser maior que zero.");
+			if (amount > MAX_AMOUNT) return setErr("Valor máximo é R$ 99.999.999,99.");
+			if (!description) return setErr("Descrição não pode ficar vazia.");
+
+			const btn = $("#save");
+			btn.disabled = true;
+
+			try {
+				if (editId == null)
+					await api("POST", "/transactions", {
+						amount,
+						description,
+						type
+					});
+				else
+					await api("PATCH", `/transactions/${editId}`, {
+						amount,
+						description,
+						type
+					});
+
+				setErr("");
+				resetForm();
+			} catch (err) {
+				setErr(err.message);
+			}
+
+			btn.disabled = false;
+			await loadAll();
+		});
+
+		$("#cancel").onclick = () => { resetForm(); setErr(""); };
+		$("#reload").onclick = loadAll;
+		document.querySelectorAll(".seg button").forEach(b => b.onclick = () => setType(b.dataset.t));
+		document.querySelectorAll("#filters .pill").forEach(b => b.onclick = () => {
+			filter = b.dataset.f; shown = PAGE;
+			document.querySelectorAll("#filters .pill").forEach(x => x.setAttribute("aria-pressed", x === b));
+			render();
+		});
+
+		loadAll();
+	</script>
+</body>
+
+</html>
